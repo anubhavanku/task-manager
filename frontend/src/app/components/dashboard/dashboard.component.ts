@@ -45,7 +45,7 @@ export class DashboardComponent implements OnInit {
     private taskService: TaskService,
     private projectService: ProjectService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.currentUser = this.auth.getCurrentUser();
@@ -159,5 +159,9 @@ export class DashboardComponent implements OnInit {
   getInitials(name: string): string {
     if (!name) return '?';
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  }
+
+  formatStatus(status: string): string {
+    return status.replace('_', ' ');
   }
 }

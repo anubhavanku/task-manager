@@ -112,7 +112,7 @@
             <span class="task-status-badge"
                   [style.color]="getStatusColor(task.status)"
                   [style.background]="getStatusColor(task.status) + '22'">
-              {{ task.status | titlecase }}
+              {{ formatStatus(task.status) | titlecase }}
             </span>
           </div>
         </div>

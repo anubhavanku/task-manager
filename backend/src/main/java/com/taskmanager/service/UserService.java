@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +49,43 @@ public class UserService implements UserDetailsService {
         }
 
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updateProfile(User currentUser, Map<String, String> updates) {
+        String fullName = updates.get("fullName");
+        String username = updates.get("username");
+        String email = updates.get("email");
+        String currentPassword = updates.get("currentPassword");
+        String newPassword = updates.get("newPassword");
+
+        if (fullName != null && !fullName.isBlank())
+            currentUser.setFullName(fullName);
+
+        if (username != null && !username.isBlank() &&
+                !username.equals(currentUser.getUsername())) {
+            if (userRepository.existsByUsername(username))
+                throw new RuntimeException("Username already taken");
+            currentUser.setUsername(username);
+        }
+
+        if (email != null && !email.isBlank() &&
+                !email.equals(currentUser.getEmail())) {
+            if (userRepository.existsByEmail(email))
+                throw new RuntimeException("Email already in use");
+            currentUser.setEmail(email);
+        }
+
+        if (newPassword != null && !newPassword.isBlank()) {
+            if (currentPassword == null ||
+                    !passwordEncoder.matches(currentPassword, currentUser.getPassword()))
+                throw new RuntimeException("Current password is incorrect");
+            if (newPassword.length() < 6)
+                throw new RuntimeException("New password must be at least 6 characters");
+            currentUser.setPassword(passwordEncoder.encode(newPassword));
+        }
+
+        return userRepository.save(currentUser);
     }
 
     public User findByEmailOrUsername(String identifier) {

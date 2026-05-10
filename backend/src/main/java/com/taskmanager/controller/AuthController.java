@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -61,5 +63,27 @@ public class AuthController {
     @GetMapping("/users")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateProfile(
+            @RequestBody Map<String, String> updates,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            User user = userService.getUserFromEmail(userDetails.getUsername());
+            User updated = userService.updateProfile(user, updates);
+            String newToken = jwtUtil.generateToken(updated.getEmail());
+            return ResponseEntity.ok(new AuthResponse(
+                    newToken,
+                    updated.getId(),
+                    updated.getUsername(),
+                    updated.getEmail(),
+                    updated.getFullName(),
+                    updated.getRole().name(),
+                    updated.getAvatarColor()
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 }

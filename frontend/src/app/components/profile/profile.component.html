@@ -1,1 +1,188 @@
-<p>profile works!</p>
+<div class="page-container">
+    <div class="profile-layout">
+
+        <!-- Left — Avatar + Info -->
+        <mat-card class="profile-card">
+            <div class="avatar-section">
+                <div class="avatar-xl" [style.background-color]="currentUser?.avatarColor">
+                    {{ getInitials() }}
+                </div>
+                <h2>{{ currentUser?.fullName }}</h2>
+                <p class="username">@{{ currentUser?.username }}</p>
+                <span class="role-badge" [class.admin]="currentUser?.role === 'ADMIN'">
+                    {{ currentUser?.role }}
+                </span>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Edit Actions -->
+            <div class="profile-actions">
+                <button mat-stroked-button class="edit-btn" (click)="openEditForm()">
+                    <mat-icon>edit</mat-icon>
+                    Edit Profile
+                </button>
+                <button mat-stroked-button class="pwd-btn"
+                    (click)="showPasswordForm = !showPasswordForm; showEditForm = false">
+                    <mat-icon>lock</mat-icon>
+                    Change Password
+                </button>
+            </div>
+
+            <!-- Edit Profile Form -->
+            <div class="edit-form" *ngIf="showEditForm">
+                <mat-divider></mat-divider>
+                <form [formGroup]="editForm" (ngSubmit)="saveProfile()">
+                    <mat-form-field appearance="outline" floatLabel="always" class="full-width">
+                        <mat-label>Full Name</mat-label>
+                        <input matInput formControlName="fullName">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" floatLabel="always" class="full-width">
+                        <mat-label>Username</mat-label>
+                        <input matInput formControlName="username">
+                        <mat-error *ngIf="editForm.get('username')?.hasError('minlength')">Min 3 characters</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" floatLabel="always" class="full-width">
+                        <mat-label>Email</mat-label>
+                        <input matInput formControlName="email">
+                        <mat-error *ngIf="editForm.get('email')?.hasError('email')">Invalid email</mat-error>
+                    </mat-form-field>
+
+                    <div class="form-actions">
+                        <button mat-stroked-button type="button" (click)="showEditForm = false">Cancel</button>
+                        <button mat-raised-button class="save-btn" type="submit"
+                            [disabled]="saving || editForm.invalid">
+                            <mat-spinner diameter="16" *ngIf="saving"></mat-spinner>
+                            <span *ngIf="!saving">Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Change Password Form -->
+            <div class="edit-form" *ngIf="showPasswordForm">
+                <mat-divider></mat-divider>
+                <form [formGroup]="passwordForm" (ngSubmit)="savePassword()">
+                    <mat-form-field appearance="outline" floatLabel="always" class="full-width">
+                        <mat-label>Current Password</mat-label>
+                        <input matInput formControlName="currentPassword" [type]="hideCurrentPwd ? 'password' : 'text'">
+                        <button mat-icon-button matSuffix type="button" (click)="hideCurrentPwd = !hideCurrentPwd">
+                            <mat-icon>{{ hideCurrentPwd ? 'visibility_off' : 'visibility' }}</mat-icon>
+                        </button>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" floatLabel="always" class="full-width">
+                        <mat-label>New Password</mat-label>
+                        <input matInput formControlName="newPassword" [type]="hideNewPwd ? 'password' : 'text'">
+                        <button mat-icon-button matSuffix type="button" (click)="hideNewPwd = !hideNewPwd">
+                            <mat-icon>{{ hideNewPwd ? 'visibility_off' : 'visibility' }}</mat-icon>
+                        </button>
+                        <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('minlength')">Min 6
+                            characters</mat-error>
+                    </mat-form-field>
+
+                    <div class="form-actions">
+                        <button mat-stroked-button type="button" (click)="showPasswordForm = false">Cancel</button>
+                        <button mat-raised-button class="save-btn" type="submit"
+                            [disabled]="savingPassword || passwordForm.invalid">
+                            <mat-spinner diameter="16" *ngIf="savingPassword"></mat-spinner>
+                            <span *ngIf="!savingPassword">Update</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="info-list">
+                <div class="info-row">
+                    <mat-icon>email</mat-icon>
+                    <span>{{ currentUser?.email }}</span>
+                </div>
+                <div class="info-row">
+                    <mat-icon>manage_accounts</mat-icon>
+                    <span>{{ currentUser?.role }}</span>
+                </div>
+                <div class="info-row">
+                    <mat-icon>diversity_2</mat-icon>
+                    <span>{{ getMemberSince() }}</span>
+                </div>
+            </div>
+        </mat-card>
+
+        <!-- Right — Stats -->
+        <div class="right-col">
+
+            <!-- Task Stats -->
+            <mat-card class="stats-card">
+                <h2><mat-icon>bar_chart</mat-icon> My Task Stats</h2>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-num">{{ myTasks.length }}</span>
+                        <span class="stat-lbl">Total Assigned</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-num" style="color: #6b7280">{{ todoCount }}</span>
+                        <span class="stat-lbl">To Do</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-num" style="color: #3b82f6">{{ inProgressCount }}</span>
+                        <span class="stat-lbl">In Progress</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-num" style="color: #10b981">{{ doneCount }}</span>
+                        <span class="stat-lbl">Completed</span>
+                    </div>
+                </div>
+
+                <!-- Completion Bar -->
+                <div class="completion-section">
+                    <div class="completion-header">
+                        <span>Completion Rate</span>
+                        <span class="completion-pct">{{ getCompletionRate() }}%</span>
+                    </div>
+                    <mat-progress-bar mode="determinate" [value]="getCompletionRate()" class="progress-bar">
+                    </mat-progress-bar>
+                </div>
+            </mat-card>
+
+            <!-- Recent Tasks -->
+            <mat-card class="recent-tasks-card">
+                <h2><mat-icon>assignment</mat-icon> My Tasks</h2>
+
+                <div class="task-list" *ngIf="myTasks.length > 0">
+                    <div class="task-item" *ngFor="let task of myTasks">
+                        <div class="task-left">
+                            <div class="priority-dot" [style.background-color]="
+                task.priority === 'CRITICAL' ? '#ef4444' :
+                task.priority === 'HIGH' ? '#f59e0b' :
+                task.priority === 'MEDIUM' ? '#3b82f6' : '#10b981'"></div>
+                            <div class="task-info">
+                                <span class="task-title">{{ task.title }}</span>
+                                <span class="task-due" *ngIf="task.dueDate">
+                                    {{ task.dueDate | date:'MMM d' }}
+                                </span>
+                            </div>
+                        </div>
+                        <span class="status-chip" [style.color]="
+                task.status === 'DONE' ? '#10b981' :
+                task.status === 'IN_PROGRESS' ? '#3b82f6' :
+                task.status === 'IN_REVIEW' ? '#f59e0b' : '#6b7280'" [style.background]="
+                task.status === 'DONE' ? '#10b98122' :
+                task.status === 'IN_PROGRESS' ? '#3b82f622' :
+                task.status === 'IN_REVIEW' ? '#f59e0b22' : '#6b728022'">
+                            {{ formatStatus(task.status) | titlecase }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="empty-state" *ngIf="myTasks.length === 0">
+                    <mat-icon>assignment_turned_in</mat-icon>
+                    <p>No tasks assigned yet</p>
+                </div>
+            </mat-card>
+
+        </div>
+    </div>
+</div>

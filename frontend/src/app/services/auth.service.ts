@@ -6,59 +6,65 @@ import { AuthRequest, AuthResponse, RegisterRequest, User } from '../models/user
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/auth';
-  private currentUserSubject = new BehaviorSubject<AuthResponse | null>(this.getStoredUser());
+    private apiUrl = 'http://localhost:8080/api/auth';
+    private currentUserSubject = new BehaviorSubject<AuthResponse | null>(this.getStoredUser());
 
-  currentUser$ = this.currentUserSubject.asObservable();
+    currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
-  register(request: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, request).pipe(
-      tap(res => this.storeUser(res))
-    );
-  }
+    register(request: RegisterRequest): Observable<AuthResponse> {
+        return this.http.post<AuthResponse>(`${this.apiUrl}/register`, request).pipe(
+            tap(res => this.storeUser(res))
+        );
+    }
 
-  login(request: AuthRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request).pipe(
-      tap(res => this.storeUser(res))
-    );
-  }
+    login(request: AuthRequest): Observable<AuthResponse> {
+        return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request).pipe(
+            tap(res => this.storeUser(res))
+        );
+    }
 
-  getAllUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/users`);
-  }
+    updateProfile(updates: any): Observable<AuthResponse> {
+        return this.http.put<AuthResponse>(`${this.apiUrl}/profile`, updates).pipe(
+            tap(res => this.storeUser(res))
+        );
+    }
 
-  logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    this.currentUserSubject.next(null);
-  }
+    getAllUsers(): Observable<User[]> {
+        return this.http.get<User[]>(`${this.apiUrl}/users`);
+    }
 
-  getToken(): string | null {
-    return localStorage.getItem('token');
-  }
+    logout(): void {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        this.currentUserSubject.next(null);
+    }
 
-  getCurrentUser(): AuthResponse | null {
-    return this.currentUserSubject.value;
-  }
+    getToken(): string | null {
+        return localStorage.getItem('token');
+    }
 
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
+    getCurrentUser(): AuthResponse | null {
+        return this.currentUserSubject.value;
+    }
 
-  isAdmin(): boolean {
-    return this.getCurrentUser()?.role === 'ADMIN';
-  }
+    isLoggedIn(): boolean {
+        return !!this.getToken();
+    }
 
-  private storeUser(res: AuthResponse): void {
-    localStorage.setItem('token', res.token);
-    localStorage.setItem('user', JSON.stringify(res));
-    this.currentUserSubject.next(res);
-  }
+    isAdmin(): boolean {
+        return this.getCurrentUser()?.role === 'ADMIN';
+    }
 
-  private getStoredUser(): AuthResponse | null {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
-  }
+    private storeUser(res: AuthResponse): void {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('user', JSON.stringify(res));
+        this.currentUserSubject.next(res);
+    }
+
+    private getStoredUser(): AuthResponse | null {
+        const user = localStorage.getItem('user');
+        return user ? JSON.parse(user) : null;
+    }
 }

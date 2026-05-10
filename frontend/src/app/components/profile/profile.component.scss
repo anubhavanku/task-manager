@@ -1,0 +1,260 @@
+.profile-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.profile-card {
+  padding: 2rem !important;
+  border-radius: 16px !important;
+  text-align: center;
+
+  .avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    .avatar-xl {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .username {
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .role-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 20px;
+      background: rgba(107, 114, 128, 0.15);
+      color: #6b7280;
+
+      &.admin {
+        background: rgba(108, 99, 255, 0.12);
+        color: #6c63ff;
+      }
+    }
+  }
+
+  .info-list {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .info-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: #555;
+
+      mat-icon {
+        color: #6c63ff;
+        font-size: 1.1rem;
+        width: 1.1rem;
+        height: 1.1rem;
+      }
+    }
+  }
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 1.5rem;
+
+  .edit-btn, .pwd-btn {
+    width: 100%;
+    border-radius: 8px !important;
+    color: #6c63ff !important;
+    border-color: #6c63ff !important;
+  }
+}
+
+.edit-form {
+  margin-top: 1rem;
+  text-align: left;
+
+  .full-width {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 0.5rem;
+
+    .save-btn {
+      background: #6c63ff !important;
+      color: #fff !important;
+      border-radius: 8px !important;
+      min-width: 80px;
+    }
+  }
+}
+
+.right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.stats-card, .recent-tasks-card {
+  padding: 1.5rem !important;
+  border-radius: 12px !important;
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+
+    mat-icon { color: #6c63ff; font-size: 1.2rem; }
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(108, 99, 255, 0.05);
+    border-radius: 10px;
+
+    .stat-num {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #6c63ff;
+    }
+
+    .stat-lbl {
+      font-size: 0.75rem;
+      color: #888;
+      margin-top: 4px;
+      text-align: center;
+    }
+  }
+}
+
+.completion-section {
+  .completion-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.875rem;
+
+    .completion-pct {
+      font-weight: 700;
+      color: #6c63ff;
+    }
+  }
+
+  .progress-bar {
+    border-radius: 4px;
+    height: 8px;
+  }
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 8px;
+  transition: background 0.2s;
+
+  &:hover { background: rgba(108, 99, 255, 0.05); }
+
+  .task-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .priority-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .task-info {
+      display: flex;
+      flex-direction: column;
+
+      .task-title { font-size: 0.9rem; font-weight: 500; }
+      .task-due { font-size: 0.75rem; color: #888; }
+    }
+  }
+
+  .status-chip {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  color: #888;
+  gap: 8px;
+
+  mat-icon {
+    font-size: 2.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    opacity: 0.4;
+    color: #6c63ff;
+  }
+
+  p { font-size: 0.875rem; }
+}
+
+/* Dark mode */
+:host-context(body.dark-mode) {
+  .info-row { color: #aaa !important; }
+}
