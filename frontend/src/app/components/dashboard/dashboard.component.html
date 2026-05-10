@@ -1,1 +1,173 @@
-<p>dashboard works!</p>
+<div class="page-container">
+
+  <!-- Greeting -->
+  <div class="greeting-section">
+    <div class="greeting-left">
+      <div class="avatar-large" [style.background-color]="currentUser?.avatarColor">
+        {{ getInitials(currentUser?.fullName || '') }}
+      </div>
+      <div>
+        <h1>{{ getGreeting() }}, {{ (currentUser?.fullName || '').split(' ')[0] }}!</h1>
+        <p class="greeting-sub">Here's your work summary for today</p>
+      </div>
+    </div>
+    <button mat-stroked-button (click)="goToProjects()" class="view-all-btn">
+      <mat-icon>folder</mat-icon>
+      All Projects
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- Stats Row -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #6b728022; color: #6b7280">
+          <mat-icon>radio_button_unchecked</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ todoCount }}</span>
+          <span class="stat-label">To Do</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #3b82f622; color: #3b82f6">
+          <mat-icon>autorenew</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ inProgressCount }}</span>
+          <span class="stat-label">In Progress</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #f59e0b22; color: #f59e0b">
+          <mat-icon>rate_review</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ inReviewCount }}</span>
+          <span class="stat-label">In Review</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #10b98122; color: #10b981">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ doneCount }}</span>
+          <span class="stat-label">Done</span>
+        </div>
+      </div>
+
+      <div class="stat-card alert" *ngIf="overdueCount > 0">
+        <div class="stat-icon" style="background: #ef444422; color: #ef4444">
+          <mat-icon>warning</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number" style="color: #ef4444">{{ overdueCount }}</span>
+          <span class="stat-label">Overdue</span>
+        </div>
+      </div>
+
+      <div class="stat-card" *ngIf="dueTodayCount > 0">
+        <div class="stat-icon" style="background: #6c63ff22; color: #6c63ff">
+          <mat-icon>today</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number" style="color: #6c63ff">{{ dueTodayCount }}</span>
+          <span class="stat-label">Due Today</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-grid">
+
+      <!-- My Tasks -->
+      <mat-card class="tasks-card">
+        <div class="card-header">
+          <h2><mat-icon>assignment</mat-icon> My Tasks</h2>
+          <span class="task-total">{{ myTasks.length }} total</span>
+        </div>
+
+        <div class="task-list" *ngIf="myTasks.length > 0">
+          <div class="task-row" *ngFor="let task of myTasks"
+               (click)="goToBoard(task.projectId)">
+            <div class="task-priority-dot"
+                 [style.background-color]="getPriorityColor(task.priority)"></div>
+            <div class="task-info">
+              <span class="task-name">{{ task.title }}</span>
+              <span class="task-due" [class.overdue]="isOverdue(task)" *ngIf="task.dueDate">
+                <mat-icon>schedule</mat-icon>
+                {{ task.dueDate | date:'MMM d' }}
+              </span>
+            </div>
+            <span class="task-status-badge"
+                  [style.color]="getStatusColor(task.status)"
+                  [style.background]="getStatusColor(task.status) + '22'">
+              {{ task.status | titlecase }}
+            </span>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="myTasks.length === 0">
+          <mat-icon>assignment_turned_in</mat-icon>
+          <p>No tasks assigned to you</p>
+        </div>
+      </mat-card>
+
+      <!-- Right Column -->
+      <div class="right-col">
+
+        <!-- Charts -->
+        <mat-card class="chart-card" *ngIf="myTasks.length > 0">
+          <h2><mat-icon>pie_chart</mat-icon> Task Status</h2>
+          <div class="chart-wrapper">
+            <canvas baseChart
+              [data]="{ labels: taskStatusChartLabels, datasets: taskStatusChartData }"
+              [options]="chartOptions"
+              type="doughnut">
+            </canvas>
+          </div>
+        </mat-card>
+
+        <!-- Active Projects -->
+        <mat-card class="projects-card">
+          <div class="card-header">
+            <h2><mat-icon>folder</mat-icon> Active Projects</h2>
+          </div>
+
+          <div class="project-list" *ngIf="projects.length > 0">
+            <div class="project-row" *ngFor="let project of projects"
+                 (click)="goToBoard(project.id)">
+              <div class="project-icon">
+                <mat-icon>folder</mat-icon>
+              </div>
+              <div class="project-info">
+                <span class="project-name">{{ project.name }}</span>
+                <span class="project-meta">
+                  {{ project.taskCount }} tasks · {{ project.members.length }} members
+                </span>
+              </div>
+              <mat-icon class="arrow-icon">chevron_right</mat-icon>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="projects.length === 0">
+            <mat-icon>folder_open</mat-icon>
+            <p>No active projects</p>
+          </div>
+        </mat-card>
+
+      </div>
+    </div>
+
+  </ng-container>
+</div>

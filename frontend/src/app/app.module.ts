@@ -28,6 +28,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
+import { NgChartsModule } from 'ng2-charts';
+
 // Angular CDK
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
@@ -98,7 +100,8 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     MatDividerModule,
     MatProgressBarModule,
     MatTabsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    NgChartsModule
   ],
   providers: [
     TitleCasePipe,
