@@ -1,0 +1,71 @@
+.form-dialog {
+  padding: 1.5rem;
+  min-width: 500px;
+
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+
+  .half-width {
+    flex: 1;
+  }
+}
+
+.priority-option {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.assignee-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mini-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 1rem;
+
+  .submit-btn {
+    background: #6c63ff !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+    min-width: 120px;
+
+    mat-spinner { display: inline-block; }
+  }
+}

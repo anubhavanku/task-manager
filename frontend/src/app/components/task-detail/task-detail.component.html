@@ -1,1 +1,165 @@
-<p>task-detail works!</p>
+<div class="task-detail-dialog">
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!loading && task">
+
+    <!-- Header -->
+    <div class="detail-header">
+      <div class="header-badges">
+        <span class="priority-badge"
+          [style.color]="priorityColors[task.priority]"
+          [style.background]="priorityColors[task.priority] + '22'">
+          {{ task.priority }}
+        </span>
+        <span class="status-badge"
+          [style.color]="statusColors[task.status]"
+          [style.background]="statusColors[task.status] + '22'">
+          {{ task.status | titlecase }}
+        </span>
+        <span class="overdue-badge" *ngIf="isOverdue()">
+          <mat-icon>warning</mat-icon> Overdue
+        </span>
+      </div>
+      <div class="header-actions">
+        <button mat-icon-button (click)="openEditTask()" matTooltip="Edit task">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="deleteTask()" matTooltip="Delete task" class="delete-btn">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button (click)="dialogRef.close(null)" matTooltip="Close">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <h2 class="task-title">{{ task.title }}</h2>
+    <p class="task-desc" *ngIf="task.description">{{ task.description }}</p>
+
+    <!-- Meta Info -->
+    <div class="meta-grid">
+      <div class="meta-item">
+        <span class="meta-label">Assignee</span>
+        <div class="meta-value assignee-val" *ngIf="task.assignee; else unassigned">
+          <div class="mini-avatar" [style.background-color]="task.assignee.avatarColor">
+            {{ getInitials(task.assignee.fullName) }}
+          </div>
+          {{ task.assignee.fullName }}
+        </div>
+        <ng-template #unassigned>
+          <span class="meta-value unassigned">Unassigned</span>
+        </ng-template>
+      </div>
+
+      <div class="meta-item">
+        <span class="meta-label">Due Date</span>
+        <span class="meta-value" [class.overdue-text]="isOverdue()">
+          {{ task.dueDate ? (task.dueDate | date:'mediumDate') : 'No due date' }}
+        </span>
+      </div>
+
+      <div class="meta-item">
+        <span class="meta-label">Created By</span>
+        <span class="meta-value">{{ task.createdBy.fullName }}</span>
+      </div>
+
+      <div class="meta-item">
+        <span class="meta-label">Created</span>
+        <span class="meta-value">{{ task.createdAt | date:'mediumDate' }}</span>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Tabs -->
+    <mat-tab-group [(selectedIndex)]="activeTab" class="detail-tabs">
+
+      <!-- Comments Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>chat_bubble_outline</mat-icon>
+          Comments ({{ task.commentCount }})
+        </ng-template>
+
+        <div class="tab-content">
+          <!-- Add Comment -->
+          <div class="add-comment">
+            <mat-form-field appearance="outline" floatLabel="always" class="full-width">
+              <mat-label>Add a comment</mat-label>
+              <textarea matInput [(ngModel)]="newComment"
+                        placeholder="Write a comment..."
+                        rows="2"
+                        (keydown.control.enter)="addComment()"></textarea>
+            </mat-form-field>
+            <button mat-raised-button class="submit-btn"
+                    (click)="addComment()"
+                    [disabled]="!newComment.trim() || submittingComment">
+              <mat-spinner diameter="16" *ngIf="submittingComment"></mat-spinner>
+              <span *ngIf="!submittingComment">Post</span>
+            </button>
+          </div>
+
+          <!-- Comment List -->
+          <div class="comment-list">
+            <div class="comment-item" *ngFor="let comment of comments">
+              <div class="comment-avatar" [style.background-color]="comment.author.avatarColor">
+                {{ getInitials(comment.author.fullName) }}
+              </div>
+              <div class="comment-body">
+                <div class="comment-header">
+                  <span class="comment-author">{{ comment.author.fullName }}</span>
+                  <span class="comment-time">{{ comment.createdAt | date:'MMM d, h:mm a' }}</span>
+                  <button mat-icon-button class="delete-comment-btn"
+                          *ngIf="comment.author.id === currentUserId"
+                          (click)="deleteComment(comment)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+                <p class="comment-text">{{ comment.content }}</p>
+              </div>
+            </div>
+
+            <div class="empty-comments" *ngIf="comments.length === 0">
+              <mat-icon>chat_bubble_outline</mat-icon>
+              <p>No comments yet</p>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Activity Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>history</mat-icon>
+          Activity
+        </ng-template>
+
+        <div class="tab-content">
+          <div class="activity-list">
+            <div class="activity-item" *ngFor="let activity of activities">
+              <div class="activity-avatar" [style.background-color]="activity.user.avatarColor">
+                {{ getInitials(activity.user.fullName) }}
+              </div>
+              <div class="activity-body">
+                <span class="activity-user">{{ activity.user.fullName }}</span>
+                <span class="activity-action">{{ activity.action }}</span>
+                <span class="activity-time">{{ activity.createdAt | date:'MMM d, h:mm a' }}</span>
+              </div>
+            </div>
+
+            <div class="empty-comments" *ngIf="activities.length === 0">
+              <mat-icon>history</mat-icon>
+              <p>No activity yet</p>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+
+  </ng-container>
+</div>

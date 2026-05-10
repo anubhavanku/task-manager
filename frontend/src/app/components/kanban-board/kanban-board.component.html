@@ -1,1 +1,115 @@
-<p>kanban-board works!</p>
+<div class="kanban-container">
+
+  <!-- Header -->
+  <div class="kanban-header">
+    <div class="header-left">
+      <button mat-icon-button (click)="router.navigate(['/projects', projectId])" matTooltip="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div>
+        <h1>{{ project?.name || 'Board' }}</h1>
+        <p class="subtitle">Kanban Board</p>
+      </div>
+    </div>
+    <button mat-raised-button class="add-task-btn" (click)="openCreateTask()">
+      <mat-icon>add</mat-icon>
+      Add Task
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <!-- Board -->
+  <div class="board" *ngIf="!loading">
+    <div class="column" *ngFor="let col of columns">
+
+      <!-- Column Header -->
+      <div class="column-header" [style.border-top-color]="col.color">
+        <div class="col-title">
+          <mat-icon [style.color]="col.color">{{ col.icon }}</mat-icon>
+          <span>{{ col.label }}</span>
+          <span class="task-count">{{ col.tasks.length }}</span>
+        </div>
+      </div>
+
+      <!-- Drop List -->
+      <div class="task-list"
+        cdkDropList
+        [id]="col.status"
+        [cdkDropListData]="col.tasks"
+        [cdkDropListConnectedTo]="getColumnIds()"
+        (cdkDropListDropped)="drop($event, col.status)">
+
+        <!-- Task Card -->
+        <div class="task-card"
+          *ngFor="let task of col.tasks"
+          cdkDrag
+          (click)="openTaskDetail(task)">
+
+          <!-- Drag Handle -->
+          <div class="drag-handle" cdkDragHandle>
+            <mat-icon>drag_indicator</mat-icon>
+          </div>
+
+          <!-- Priority Bar -->
+          <div class="priority-bar" [style.background-color]="priorityColors[task.priority]"></div>
+
+          <div class="task-content">
+            <div class="task-header">
+              <span class="task-title">{{ task.title }}</span>
+              <div class="task-actions">
+                <button mat-icon-button (click)="openEditTask(task, $event)" matTooltip="Edit">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="deleteTask(task, $event)" matTooltip="Delete">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <p class="task-desc" *ngIf="task.description">{{ task.description }}</p>
+
+            <div class="task-meta">
+              <span class="priority-chip" [style.color]="priorityColors[task.priority]"
+                    [style.background]="priorityColors[task.priority] + '22'">
+                {{ task.priority }}
+              </span>
+
+              <span class="due-date" [class.overdue]="isOverdue(task)" *ngIf="task.dueDate">
+                <mat-icon>schedule</mat-icon>
+                {{ task.dueDate | date:'MMM d' }}
+              </span>
+            </div>
+
+            <div class="task-footer">
+              <div class="assignee" *ngIf="task.assignee">
+                <div class="mini-avatar" [style.background-color]="task.assignee.avatarColor"
+                     [matTooltip]="task.assignee.fullName">
+                  {{ getInitials(task.assignee.fullName) }}
+                </div>
+              </div>
+              <span class="comment-count" *ngIf="task.commentCount > 0">
+                <mat-icon>chat_bubble_outline</mat-icon>
+                {{ task.commentCount }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Drag Placeholder -->
+          <div *cdkDragPlaceholder class="drag-placeholder"></div>
+        </div>
+
+        <!-- Empty Column -->
+        <div class="empty-column" *ngIf="col.tasks.length === 0">
+          <mat-icon>inbox</mat-icon>
+          <p>Drop tasks here</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

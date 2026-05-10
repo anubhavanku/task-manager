@@ -14,6 +14,7 @@ public class TaskDTO {
     private LocalDate dueDate;
     private Integer position;
     private Long projectId;
+    private Long assigneeId;
     private UserDTO assignee;
     private UserDTO createdBy;
     private int commentCount;

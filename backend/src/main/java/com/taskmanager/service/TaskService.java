@@ -55,7 +55,10 @@ public class TaskService {
         task.setStatus(Task.Status.TODO);
         task.setPosition(0);
 
-        if (dto.getAssignee() != null && dto.getAssignee().getId() != null) {
+        if (dto.getAssigneeId() != null) {
+            userRepository.findById(dto.getAssigneeId())
+                    .ifPresent(task::setAssignee);
+        } else if (dto.getAssignee() != null && dto.getAssignee().getId() != null) {
             userRepository.findById(dto.getAssignee().getId())
                     .ifPresent(task::setAssignee);
         }
@@ -78,7 +81,10 @@ public class TaskService {
             task.setPriority(Task.Priority.valueOf(dto.getPriority()));
         task.setDueDate(dto.getDueDate());
 
-        if (dto.getAssignee() != null && dto.getAssignee().getId() != null) {
+        if (dto.getAssigneeId() != null) {
+            userRepository.findById(dto.getAssigneeId())
+                    .ifPresent(task::setAssignee);
+        } else if (dto.getAssignee() != null && dto.getAssignee().getId() != null) {
             userRepository.findById(dto.getAssignee().getId())
                     .ifPresent(task::setAssignee);
         } else {

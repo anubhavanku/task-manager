@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AsyncPipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 
 // Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -100,6 +101,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     MatAutocompleteModule
   ],
   providers: [
+    TitleCasePipe,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

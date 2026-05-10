@@ -1,1 +1,82 @@
-<p>task-form works!</p>
+<div class="form-dialog">
+    <div class="dialog-header">
+        <h2>{{ data.mode === 'create' ? 'Create Task' : 'Edit Task' }}</h2>
+        <button mat-icon-button (click)="dialogRef.close(false)">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <!-- Title -->
+        <mat-form-field appearance="outline" floatLabel="always" class="full-width">
+            <mat-label>Task Title</mat-label>
+            <input matInput formControlName="title" placeholder="Enter task title">
+            <mat-error *ngIf="form.get('title')?.hasError('required')">Title is required</mat-error>
+            <mat-error *ngIf="form.get('title')?.hasError('maxlength')">Max 100 characters</mat-error>
+        </mat-form-field>
+
+        <!-- Description -->
+        <mat-form-field appearance="outline" floatLabel="always" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" placeholder="What needs to be done?" rows="3"></textarea>
+        </mat-form-field>
+
+        <div class="form-row">
+            <!-- Priority -->
+            <mat-form-field appearance="outline" floatLabel="always" class="half-width">
+                <mat-label>Priority</mat-label>
+                <mat-select formControlName="priority">
+                    <mat-option *ngFor="let p of priorities" [value]="p">
+                        <span class="priority-option" [style.color]="priorityColors[p]">
+                            ● {{ p }}
+                        </span>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Status -->
+            <mat-form-field appearance="outline" floatLabel="always" class="half-width">
+                <mat-label>Status</mat-label>
+                <mat-select formControlName="status">
+                    <mat-option *ngFor="let s of statuses" [value]="s">
+                        {{ s | titlecase }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="form-row">
+            <!-- Due Date -->
+            <mat-form-field appearance="outline" floatLabel="always" class="half-width">
+                <mat-label>Due Date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="dueDate" placeholder="Select date">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <!-- Assignee -->
+            <mat-form-field appearance="outline" floatLabel="always" class="half-width">
+                <mat-label>Assignee</mat-label>
+                <mat-select formControlName="assigneeId">
+                    <mat-option [value]="null">Unassigned</mat-option>
+                    <mat-option *ngFor="let m of members" [value]="m.id">
+                        {{ m.fullName }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="dialogRef.close(false)">
+                Cancel
+            </button>
+            <button mat-raised-button class="submit-btn" type="submit" [disabled]="loading || form.invalid">
+                <mat-spinner diameter="18" *ngIf="loading"></mat-spinner>
+                <span *ngIf="!loading">{{ data.mode === 'create' ? 'Create Task' : 'Update Task' }}</span>
+            </button>
+        </div>
+
+    </form>
+</div>

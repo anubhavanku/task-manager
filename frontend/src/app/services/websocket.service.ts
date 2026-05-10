@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Client, StompSubscription } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
 import { Subject } from 'rxjs';
 import { WebSocketMessage } from '../models/websocket.model';
 
@@ -14,7 +13,7 @@ export class WebsocketService {
 
   constructor() {
     this.client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+      brokerURL: 'ws://localhost:8080/ws/websocket',
       reconnectDelay: 5000
     });
   }

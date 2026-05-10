@@ -23,7 +23,8 @@ export interface CreateTaskRequest {
   title: string;
   description: string;
   priority: TaskPriority;
-  dueDate: string;
+  status?: TaskStatus;
+  dueDate: string | null;
   assigneeId: number | null;
 }
 
