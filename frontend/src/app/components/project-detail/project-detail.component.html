@@ -1,1 +1,128 @@
-<p>project-detail works!</p>
+<div class="page-container">
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!loading && project">
+
+    <!-- Header -->
+    <div class="page-header">
+      <button mat-icon-button (click)="router.navigate(['/projects'])" matTooltip="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="header-info">
+        <h1>{{ project.name }}</h1>
+        <p class="subtitle">{{ project.description || 'No description' }}</p>
+      </div>
+      <div class="header-actions">
+        <span class="status-badge" [style.color]="project.status === 'ACTIVE' ? '#4caf50' : '#ff9800'"
+              [style.background]="project.status === 'ACTIVE' ? '#4caf5022' : '#ff980022'">
+          {{ project.status }}
+        </span>
+        <button mat-raised-button class="board-btn" (click)="goToBoard()">
+          <mat-icon>view_kanban</mat-icon>
+          Open Board
+        </button>
+      </div>
+    </div>
+
+    <div class="detail-layout">
+
+      <!-- Members Section -->
+      <mat-card class="members-card">
+        <div class="section-header">
+          <h2><mat-icon>people</mat-icon> Members ({{ project.members.length }})</h2>
+          <button mat-stroked-button class="add-member-btn" *ngIf="isAdmin"
+                  (click)="showMemberPanel = !showMemberPanel">
+            <mat-icon>person_add</mat-icon>
+            Add Member
+          </button>
+        </div>
+
+        <!-- Add Member Search Panel -->
+        <div class="member-search-panel" *ngIf="showMemberPanel && isAdmin">
+          <mat-form-field appearance="outline" floatLabel="always" class="full-width">
+            <mat-label>Search users</mat-label>
+            <input matInput [(ngModel)]="searchQuery" (ngModelChange)="filterUsers()"
+                   placeholder="Search by name or username">
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+
+          <div class="user-search-results">
+            <div class="user-result-item" *ngFor="let user of filteredUsers"
+                 (click)="addMember(user.id)">
+              <div class="user-avatar" [style.background-color]="user.avatarColor">
+                {{ getInitials(user.fullName) }}
+              </div>
+              <div class="user-info">
+                <span class="user-name">{{ user.fullName }}</span>
+                <span class="user-username">@{{ user.username }}</span>
+              </div>
+              <mat-icon class="add-icon">add_circle</mat-icon>
+            </div>
+            <p class="no-results" *ngIf="filteredUsers.length === 0">No users to add</p>
+          </div>
+        </div>
+
+        <!-- Member List -->
+        <div class="member-list">
+          <div class="member-item" *ngFor="let member of project.members">
+            <div class="user-avatar" [style.background-color]="member.avatarColor">
+              {{ getInitials(member.fullName) }}
+            </div>
+            <div class="member-info">
+              <span class="member-name">{{ member.fullName }}</span>
+              <span class="member-username">@{{ member.username }}</span>
+            </div>
+            <span class="role-badge" [style.color]="getRoleColor(member.role)"
+                  [style.background]="getRoleColor(member.role) + '22'">
+              {{ member.role }}
+            </span>
+            <button mat-icon-button class="remove-btn"
+                    *ngIf="isAdmin && member.role !== 'OWNER' && member.id !== currentUserId"
+                    (click)="removeMember(member.id)" matTooltip="Remove">
+              <mat-icon>person_remove</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Project Info Card -->
+      <mat-card class="info-card">
+        <h2><mat-icon>info</mat-icon> Project Info</h2>
+
+        <div class="info-row">
+          <span class="info-label">Owner</span>
+          <span class="info-value">{{ project.owner.fullName }}</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="info-row">
+          <span class="info-label">Status</span>
+          <span class="info-value">{{ project.status }}</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="info-row">
+          <span class="info-label">Tasks</span>
+          <span class="info-value">{{ project.taskCount }}</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="info-row">
+          <span class="info-label">Members</span>
+          <span class="info-value">{{ project.members.length }}</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="info-row">
+          <span class="info-label">Created</span>
+          <span class="info-value">{{ project.createdAt | date:'mediumDate' }}</span>
+        </div>
+      </mat-card>
+
+    </div>
+  </ng-container>
+</div>

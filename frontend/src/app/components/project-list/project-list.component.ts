@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ProjectService } from '../../services/project.service';
 import { AuthService } from '../../services/auth.service';
 import { Project } from '../../models/project.model';
+import { ConfirmService } from '../../services/confirm.service';
 
 @Component({
   selector: 'app-project-list',
@@ -27,8 +28,9 @@ export class ProjectListComponent implements OnInit {
     private projectService: ProjectService,
     private auth: AuthService,
     private router: Router,
-    private snackbar: MatSnackBar
-  ) {}
+    private snackbar: MatSnackBar,
+    private confirm: ConfirmService
+  ) { }
 
   ngOnInit(): void {
     this.isAdmin = this.auth.isAdmin();
@@ -103,16 +105,20 @@ export class ProjectListComponent implements OnInit {
 
   deleteProject(project: Project, event: Event): void {
     event.stopPropagation();
-    if (!confirm(`Delete "${project.name}"? This cannot be undone.`)) return;
-
-    this.projectService.deleteProject(project.id).subscribe({
-      next: () => {
-        this.snackbar.open('Project deleted', 'Close', { duration: 3000 });
-        this.loadProjects();
-      },
-      error: () => {
-        this.snackbar.open('Failed to delete project', 'Close', { duration: 3000 });
-      }
+    this.confirm.confirm({
+      title: 'Delete Project',
+      message: `Delete "${project.name}"? All tasks will be permanently lost.`,
+      confirmText: 'Delete',
+      confirmColor: 'warn'
+    }).subscribe(result => {
+      if (!result) return;
+      this.projectService.deleteProject(project.id).subscribe({
+        next: () => {
+          this.snackbar.open('Project deleted', 'Close', { duration: 3000 });
+          this.loadProjects();
+        },
+        error: () => this.snackbar.open('Failed to delete project', 'Close', { duration: 3000 })
+      });
     });
   }
 
