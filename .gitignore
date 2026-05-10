@@ -1,0 +1,27 @@
+# Environment
+.env
+*.env
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.classpath
+*.project
+*.settings/
+
+# Build outputs
+backend/target/
+frontend/dist/
+frontend/.angular/
+
+# Node
+frontend/node_modules/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db

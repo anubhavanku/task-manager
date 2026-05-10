@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Client, StompSubscription } from '@stomp/stompjs';
 import { Subject } from 'rxjs';
 import { WebSocketMessage } from '../models/websocket.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class WebsocketService {
@@ -13,7 +14,7 @@ export class WebsocketService {
 
   constructor() {
     this.client = new Client({
-      brokerURL: 'ws://localhost:8080/ws/websocket',
+      brokerURL: environment.wsUrl,
       reconnectDelay: 5000
     });
   }
