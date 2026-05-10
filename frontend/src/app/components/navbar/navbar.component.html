@@ -1,0 +1,57 @@
+<mat-toolbar class="navbar" *ngIf="currentUser">
+    <div class="navbar-left">
+        <a routerLink="/dashboard" class="brand">
+            <mat-icon>diversity_2</mat-icon>
+            <span>SprintFlow</span>
+        </a>
+    </div>
+
+    <div class="navbar-center">
+        <a mat-button routerLink="/dashboard" routerLinkActive="active-link">
+            <mat-icon>dashboard</mat-icon>
+            Dashboard
+        </a>
+        <a mat-button routerLink="/projects" routerLinkActive="active-link">
+            <mat-icon>folder</mat-icon>
+            Projects
+        </a>
+    </div>
+
+    <div class="navbar-right">
+        <button class="theme-toggle" (click)="theme.toggle()"
+            [matTooltip]="(theme.isDark$ | async) ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+            <mat-icon>{{ (theme.isDark$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        </button>
+
+        <button class="avatar-btn" [matMenuTriggerFor]="userMenu">
+            <div class="avatar" [style.background-color]="currentUser.avatarColor">
+                {{ getInitials() }}
+            </div>
+        </button>
+
+        <mat-menu #userMenu="matMenu" xPosition="before">
+            <div class="menu-header">
+                <div class="avatar large" [style.background-color]="currentUser.avatarColor">
+                    {{ getInitials() }}
+                </div>
+                <div class="menu-user-info">
+                    <span class="menu-name">{{ currentUser.fullName }}</span>
+                    <span class="menu-email">{{ currentUser.email }}</span>
+                    <span class="menu-role">{{ currentUser.role }}</span>
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <button mat-menu-item routerLink="/profile">
+                <mat-icon>manage_accounts</mat-icon>
+                Profile
+            </button>
+
+            <button mat-menu-item (click)="logout()">
+                <mat-icon>logout</mat-icon>
+                Logout
+            </button>
+        </mat-menu>
+    </div>
+</mat-toolbar>

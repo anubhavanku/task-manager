@@ -1,4 +1,230 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/purple-green.css';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #f0f2f5;
+  color: #1a1a1a;
+  min-height: 100vh;
+}
+
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* ─── MATERIAL CARD & DIALOG ─── */
+.mat-mdc-card {
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+}
+
+.mat-mdc-dialog-container {
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+}
+
+/* ─── MENU ─── */
+.mat-mdc-menu-panel {
+  background: #ffffff !important;
+}
+
+.mat-mdc-menu-item {
+  color: #1a1a1a !important;
+  .mat-icon { color: #555 !important; }
+  &:hover { background: #f0f0f0 !important; }
+}
+
+/* ─── FORM FIELDS ─── */
+.mat-mdc-form-field {
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    border-color: #ccc !important;
+  }
+
+  &.mat-focused {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: #6c63ff !important;
+      border-width: 2px !important;
+    }
+    .mat-mdc-floating-label, label { color: #6c63ff !important; }
+  }
+
+  &.mat-form-field-invalid {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: #f44336 !important;
+      border-width: 2px !important;
+    }
+    .mat-mdc-floating-label, label { color: #f44336 !important; }
+  }
+
+  .mat-mdc-input-element {
+    color: #1a1a1a !important;
+    caret-color: #6c63ff !important;
+  }
+
+  .mat-mdc-floating-label, label { color: #555 !important; }
+  .mat-icon { color: #555 !important; }
+  .mat-mdc-form-field-error { color: #f44336 !important; }
+}
+
+/* ─── FIX NOTCHED OUTLINE LEADING LINE ─── */
+.mdc-notched-outline__leading {
+  border-right: none !important;
+  min-width: 0 !important;
+  width: 12px !important;
+}
+
+.mdc-notched-outline__notch {
+  border-left: none !important;
+  border-right: none !important;
+}
+
+/* ─── SELECT ─── */
+.mat-mdc-select-panel {
+  background: #ffffff !important;
+  .mat-mdc-option { color: #1a1a1a !important; }
+  .mat-mdc-option:hover { background: #f0f0f0 !important; }
+}
+
+.mat-mdc-select-arrow {
+  color: #555 !important;
+}
+
+/* ─── BUTTONS ─── */
+button.mat-mdc-button, button.mat-mdc-icon-button {
+  &:hover { background: rgba(108, 99, 255, 0.12) !important; }
+}
+
+/* ─── DIVIDER ─── */
+.mat-divider { border-top-color: #e0e0e0 !important; }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f0f2f5; }
+::-webkit-scrollbar-thumb { background: #6c63ff; border-radius: 3px; }
+
+/* ─── SNACKBAR ─── */
+.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: #333 !important;
+  --mdc-snackbar-supporting-text-color: #fff !important;
+}
+
+/*****************************************/
+///////////* ─── DARK MODE ─── *///////////
+body.dark-mode {
+  background: #13131f;
+  color: #e0e0e0;
+
+  ::-webkit-scrollbar-track { background: #1e1e2e; }
+
+  .mat-mdc-card {
+    background: #1e1e2e !important;
+    color: #e0e0e0 !important;
+  }
+
+  .mat-mdc-dialog-container {
+    background: #1e1e2e !important;
+    color: #e0e0e0 !important;
+  }
+
+  .mat-mdc-menu-panel {
+    background: #2a2a3e !important;
+  }
+
+  .mat-mdc-menu-item {
+    color: #e0e0e0 !important;
+    .mat-icon { color: #aaa !important; }
+    &:hover { background: #33334a !important; }
+  }
+
+  .mat-mdc-form-field {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: #444 !important;
+    }
+
+    &.mat-focused {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #6c63ff !important;
+        border-width: 2px !important;
+      }
+      .mat-mdc-floating-label, label { color: #6c63ff !important; }
+    }
+
+    &.mat-form-field-invalid {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #f44336 !important;
+        border-width: 2px !important;
+      }
+      .mat-mdc-floating-label, label { color: #f44336 !important; }
+    }
+
+    .mat-mdc-input-element { color: #e0e0e0 !important; }
+    .mat-mdc-floating-label, label { color: #aaa !important; }
+    .mat-icon { color: #aaa !important; }
+  }
+
+  .mat-mdc-select-panel {
+    background: #2a2a3e !important;
+    .mat-mdc-option { color: #e0e0e0 !important; }
+    .mat-mdc-option:hover { background: #33334a !important; }
+  }
+
+  .mat-mdc-select-arrow { color: #aaa !important; }
+
+  .mat-divider { border-top-color: #2a2a3e !important; }
+
+  .auth-container {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+  }
+
+  .auth-card {
+    background: #1e1e2e !important;
+    color: #e0e0e0 !important;
+    .subtitle { color: #888 !important; }
+    .footer-text { color: #888 !important; }
+  }
+
+  .menu-user-info {
+    .menu-name { color: #e0e0e0 !important; }
+    .menu-email { color: #aaa !important; }
+  }
+}
+
+/* Placeholder color */
+.mat-mdc-input-element::placeholder {
+  color: #aaa !important;
+  opacity: 1 !important;
+}
+
+textarea::placeholder {
+  color: #aaa !important;
+  opacity: 1 !important;
+}
+
+body.dark-mode {
+  .mat-mdc-input-element::placeholder {
+    color: #666 !important;
+  }
+
+  textarea::placeholder {
+    color: #666 !important;
+  }
+}

@@ -1,0 +1,95 @@
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+.auth-card {
+  width: 420px;
+  padding: 2rem;
+  border-radius: 16px !important;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.4) !important;
+
+  mat-card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #6c63ff;
+
+    mat-icon {
+      font-size: 2.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #6c63ff;
+    }
+  }
+
+  .subtitle {
+    color: #888;
+    margin: 0.5rem 0 0 0;
+    font-size: 0.95rem;
+  }
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.submit-btn {
+  height: 48px;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  margin-top: 0.5rem;
+  background-color: #6c63ff !important;
+
+  mat-spinner {
+    display: inline-block;
+    margin: 0 auto;
+  }
+}
+
+.error-msg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #f44336;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+
+  mat-icon {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+.footer-text {
+  text-align: center;
+  color: #888;
+  margin: 1.5rem 0 0 0;
+  font-size: 0.9rem;
+
+  a {
+    color: #6c63ff;
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover { text-decoration: underline; }
+  }
+}

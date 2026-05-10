@@ -1,0 +1,113 @@
+<div class="page-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <h1><mat-icon>folder</mat-icon> Projects</h1>
+      <p class="subtitle">{{ projects.length }} project{{ projects.length !== 1 ? 's' : '' }}</p>
+    </div>
+    <button mat-raised-button class="create-btn" *ngIf="isAdmin" (click)="openCreateForm()">
+        <mat-icon>add</mat-icon>
+        New Project
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && projects.length === 0">
+    <mat-icon>folder_open</mat-icon>
+    <h3>No projects yet</h3>
+    <p *ngIf="isAdmin">Create your first project to get started</p>
+    <p *ngIf="!isAdmin">You haven't been added to any project yet</p>
+    <button mat-raised-button class="create-btn" *ngIf="isAdmin" (click)="openCreateForm()">
+        <mat-icon>add</mat-icon>
+        Create Project
+    </button>
+  </div>
+
+  <!-- Project Grid -->
+  <div class="project-grid" *ngIf="!loading && projects.length > 0">
+    <mat-card class="project-card" *ngFor="let project of projects" (click)="goToDetail(project.id)">
+
+      <div class="card-header">
+        <div class="project-icon">
+          <mat-icon>folder</mat-icon>
+        </div>
+        <div class="card-actions" *ngIf="isAdmin">
+          <button mat-icon-button (click)="openEditForm(project, $event)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteProject(project, $event)" matTooltip="Delete" class="delete-btn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <h3 class="project-name">{{ project.name }}</h3>
+      <p class="project-desc">{{ project.description || 'No description' }}</p>
+
+      <div class="project-meta">
+        <span class="status-badge" [style.background-color]="getStatusColor(project.status) + '22'"
+              [style.color]="getStatusColor(project.status)">
+          {{ project.status }}
+        </span>
+        <span class="meta-info">
+          <mat-icon>people</mat-icon>
+          {{ getMemberCount(project) }}
+        </span>
+        <span class="meta-info">
+          <mat-icon>task</mat-icon>
+          {{ project.taskCount }}
+        </span>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="card-footer">
+        <span class="owner">
+          <mat-icon>person</mat-icon>
+          {{ project.owner.fullName }}
+        </span>
+        <button mat-stroked-button class="board-btn" (click)="goToBoard(project.id); $event.stopPropagation()">
+          <mat-icon>view_kanban</mat-icon>
+          Board
+        </button>
+      </div>
+
+    </mat-card>
+  </div>
+
+  <!-- Create / Edit Form Panel -->
+  <div class="form-overlay" *ngIf="showForm" (click)="showForm = false"></div>
+  <div class="form-panel" *ngIf="showForm">
+    <div class="form-header">
+      <h2>{{ formMode === 'create' ? 'New Project' : 'Edit Project' }}</h2>
+      <button mat-icon-button (click)="showForm = false">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <mat-form-field appearance="outline" floatLabel="always" class="full-width">
+      <mat-label>Project Name</mat-label>
+      <input matInput [(ngModel)]="name" placeholder="Enter project name">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput [(ngModel)]="description" placeholder="What is this project about?" rows="3"></textarea>
+    </mat-form-field>
+
+    <div class="form-actions">
+      <button mat-stroked-button (click)="showForm = false">Cancel</button>
+      <button mat-raised-button class="create-btn" (click)="submitForm()" [disabled]="submitting || !name.trim()">
+        <mat-spinner diameter="18" *ngIf="submitting"></mat-spinner>
+        <span *ngIf="!submitting">{{ formMode === 'create' ? 'Create' : 'Update' }}</span>
+      </button>
+    </div>
+  </div>
+
+</div>
